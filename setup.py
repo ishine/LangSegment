@@ -17,7 +17,7 @@ def get_long_description():
     return long_description
 
 setup(
-    name='langsplit',
+    name='LangSegment',
     version='0.1.0',
     packages=find_packages(),
     include_package_data=True,
