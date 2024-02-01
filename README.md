@@ -29,13 +29,16 @@ https://github.com/adbar/py3langid
 安装方法：Install  
 ```bash
 pip3 install LangSegment
+
+# 或者，国内推荐使用镜像安装：  
+pip3 install LangSegment -i https://pypi.mirrors.ustc.edu.cn/simple
 ```
 使用示例：Example Input  
 >示例中的句子，同时包含中日英韩4种语言，接下来将对它们分语种进行拆分，以方便TTS项目进行语音合成。  
 ```python
 
     # pip3 install LangSegment
-    from LangSegment import LangSegment
+    import LangSegment
 
     # input text example 示例：
     text = "你的名字叫<ja>佐々木？<ja>吗？韩语中的오빠读什么呢？あなたの体育の先生は\

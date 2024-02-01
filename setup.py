@@ -18,10 +18,11 @@ def get_long_description():
 
 setup(
     name='LangSegment',
-    version='0.1.0',
+    version='0.1.2',
     packages=find_packages(),
     include_package_data=True,
     long_description=get_long_description(),
+    long_description_content_type='text/markdown',
     python_requires=">=3.6",
     classifiers=[
         "Intended Audience :: Science/Research",

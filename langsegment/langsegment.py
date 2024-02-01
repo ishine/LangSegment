@@ -40,25 +40,29 @@ class LangSegment():
     # <zh>你好<zh> , <ja>佐々木</ja> , <en>OK<en> , <ko>오빠</ko> 这些写法均支持
     SYMBOLS_PATTERN = r'(<([a-zA-Z|-]*)>(.*?)<\/*[a-zA-Z|-]*>)'
     
-    def is_english_word(word):
+    @staticmethod
+    def _is_english_word(word):
         return bool(re.match(r'^[a-zA-Z]+$', word))
 
-    def is_chinese(text):
+    @staticmethod
+    def _is_chinese(text):
         for char in text:
             if '\u4e00' <= char <= '\u9fff':
                 return True
         return False
     
-    def insert_english_uppercase(text):
+    @staticmethod
+    def _insert_english_uppercase(text):
         modified_text = re.sub(r'(?<!\b)([A-Z])', r' \1', text)
         return modified_text.strip('-')
 
-    def addwords(words,language,text,newline=False):
+    @staticmethod
+    def _addwords(words,language,text,newline=False):
         if text is None:return True
         if language is None:language = ""
         language = language.lower()
         if language == 'en':
-            text = LangSegment.insert_english_uppercase(text)
+            text = LangSegment._insert_english_uppercase(text)
         if newline == False:
             preResult = None
             if len(words) > 0:
@@ -70,13 +74,14 @@ class LangSegment():
         words.append({"lang":language,"text": text})
         return False
     
-    def split_sentence(sentence):
+    @staticmethod
+    def _split_sentence(sentence):
         words = []
         segments = re.split(r'([a-zA-Z]+)', sentence)
         for segment in segments:
-            if LangSegment.is_english_word(segment):
+            if LangSegment._is_english_word(segment):
                 language = "en"
-                LangSegment.addwords(words,language,segment)
+                LangSegment._addwords(words,language,segment)
             else:
                 korean_pattern = re.compile('([\uac00-\ud7a3]+)')
                 split_words = re.split(korean_pattern,segment)
@@ -104,12 +109,13 @@ class LangSegment():
                             pass
                         check_text = re.sub(regex_pattern, '', text) 
                         language, _ = langid.classify(check_text)
-                        if len(check_text) <= 2 and LangSegment.is_chinese(check_text):language = "zh" 
-                        LangSegment.addwords(words,language,text)
+                        if len(check_text) <= 2 and LangSegment._is_chinese(check_text):language = "zh" 
+                        LangSegment._addwords(words,language,text)
                         pass
         return words
     
-    def parse_symbols(text):
+    @staticmethod
+    def _parse_symbols(text):
         pattern = re.compile(LangSegment.SYMBOLS_PATTERN)
         matches = pattern.findall(text)
         LangSegment._text_cache = {}
@@ -128,21 +134,32 @@ class LangSegment():
                 match = text_cache[line]
                 language = match[1]
                 text = match[2]
-                LangSegment.addwords(words,language,text,True)
+                LangSegment._addwords(words,language,text,True)
                 pass
             else:
-                result = LangSegment.split_sentence(line)
+                result = LangSegment._split_sentence(line)
                 words += result
                 pass
         return words
     
+    @staticmethod
     def getTexts(text:str):
         if text is None or len(text.strip()) == 0:return []
-        text = LangSegment.parse_symbols(text)
+        text = LangSegment._parse_symbols(text)
         return text
     
+    @staticmethod
     def classify(text:str):
         return LangSegment.getTexts(text)
+    
+    
+
+def getTexts(text:str):
+    return LangSegment.getTexts(text)
+
+
+def classify(text:str):
+    return LangSegment.classify(text)
     
     
 if __name__ == "__main__":

@@ -1,6 +1,4 @@
-
-
-from langsegment.langsegment import LangSegment
+import LangSegment
 
 
 if __name__ == "__main__":
