@@ -43,5 +43,5 @@ setup(
     description='This is a multilingual tokenization tool that currently supports for zh/ja/en/ko, and more languages.',
     license='BSD',
     keywords=["language detection", "language identification", "langid", "langid.py","nlp","language"],
-    url='https://github.com/juntaosun/LangSplit',
+    url='https://github.com/juntaosun/LangSegment',
 )
