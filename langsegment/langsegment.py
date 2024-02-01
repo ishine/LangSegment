@@ -8,6 +8,9 @@ Based on research by Marco Lui and Tim Baldwin.
 
 See LICENSE file for more info.
 https://github.com/adbar/py3langid
+
+Projects:
+https://github.com/juntaosun/LangSegment
 """
 
 import re
@@ -165,7 +168,7 @@ def classify(text:str):
 if __name__ == "__main__":
     
     # 示例：
-    text = "你的名字叫<ja>佐々木？<ja>吗？韩语中<ja>的오빠读什么呢？あなたの体育の先生は誰ですか? 此次发布会带来了四款iPhone 15系列机型和三款Apple Watch等一系列新品，这次的iPad Air采用了LCD屏幕" 
+    text = "你的名字叫<ja>佐々木？<ja>吗？韩语中的오빠读什么呢？あなたの体育の先生は誰ですか? 此次发布会带来了四款iPhone 15系列机型和三款Apple Watch等一系列新品，这次的iPad Air采用了LCD屏幕" 
     langlist = LangSegment.getTexts(text)
     print("=================================")
     for line in langlist:

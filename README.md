@@ -92,7 +92,7 @@ pip3 install LangSegment -i https://pypi.mirrors.ustc.edu.cn/simple
     # 处理成中文-- {'lang': 'zh', 'text': '你的名字叫'}
     # 处理成日文-- {'lang': 'ja', 'text': '佐々木？'}
 ```
-它支持高达97种语言的识别和折分，目前主要针对中文(zh)/日文(ja)/英文(en)/韩文(ko)。以下是输出结果：  
+它支持高达97种语言的识别和拆分，目前主要针对中文(zh)/日文(ja)/英文(en)/韩文(ko)。以下是输出结果：  
 它特别适合各种 TTS 前端文本多语种内容的混合标注（自动/手动），训练和推理使用。  
 
 ```python
