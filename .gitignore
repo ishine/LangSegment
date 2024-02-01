@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+*.pypirc
+.pypirc
+
+排除目录/
+
 # C extensions
 *.so
 
