@@ -220,8 +220,6 @@ class LangSegment():
                     elif not prev_language or len(prev_language) == 0:language = f'{language}|{LANG_JA}'
                     elif prev_language and LANG_JA in prev_language:language = prev_language
                     else:language = LANG_ZH
-            if language not in LangSegment.Langfilters:
-                pass
             text,*_ = re.subn(number_tags , LangSegment._restore_number , text )
             LangSegment._addwords(words,language,text)
             pass
