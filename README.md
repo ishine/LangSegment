@@ -12,30 +12,37 @@ The main purposes are: front-end for various TTS (Text-to-Speech) synthesis proj
 https://github.com/adbar/py3langid  
 
 
----    
-
 功能：将文章或句子里的例如（中/英/日/韩），按不同语言自动识别分词，使文本更适合AI处理。    
-本代码专为各种 TTS 项目的前端文本多语种混合标注区分，多语言混合训练和推理而编写。  
-
----    
-
-（1）自动分词：“韩语中的오빠读什么呢？あなたの体育の先生は誰ですか? 此次带来了四款iPhone 15系列机型”  
-（2）手动分词：“你的名字叫\<ja\>佐々木？\<ja\>吗？”  
+本代码专为各种 TTS 项目的前端文本多语种混合标注区分，多语言混合训练和推理而编写。
 
 
+![image](./webui.png)   
+## 最近更新：News   
+* 更细致的处理，中日英韩，分词更精准！  
+* 添加 WebUI 可视化界面，运行 app.py 即可快捷体验（如上图所示）。
+
+```python
+# Gradio demo：To use our gradio demo locally:
+# 运行脚本，打开浏览器 gradio webui 界面，开始快速体验。
+python app.py  
+```
+
+## 完全可控：支持    
+* （1）自动分词：“韩语中的오빠读什么呢？あなたの体育の先生は誰ですか? 此次带来了四款iPhone 15系列机型”     
+* （2）手动分词：“你的名字叫\<ja\>佐々木？\<ja\>吗？”  
+
+## 语言标签：支持  
 >分词语言标签：它和html类似，它需要成对出现 \<zh\>内容\<zh\>  或者  \<zh\>内容\</zh\>。    
 本处理结果主要针对（中文=zh , 日文=ja , 英文=en , 韩语=ko）, 实际上可支持多达 97 种不同的语言混合处理。    
 
----     
-
-安装方法：Install  
+## 安装方法：Install  
 ```bash
 pip3 install LangSegment
 
 # 或者，国内推荐使用镜像安装：  
 pip3 install LangSegment -i https://pypi.mirrors.ustc.edu.cn/simple
 ```
-使用示例：Example Input  
+## 使用示例：Example Input  
 >示例中的句子，同时包含中日英韩4种语言，接下来将对它们按不同语种进行分词，以方便各种TTS项目进行语音合成。  
 ```python
 
@@ -56,7 +63,7 @@ pip3 install LangSegment -i https://pypi.mirrors.ustc.edu.cn/simple
         print(line)
     print("=================================")
 ```
-处理结果：Example Output  
+## 处理结果：Example Output  
 ```python
     # output 输出列表行：lang=语言，text=内容
     # ===========================================================================
@@ -104,7 +111,6 @@ pip3 install LangSegment -i https://pypi.mirrors.ustc.edu.cn/simple
     # 错误示范：“你的名字叫<ja>佐々木。” 此句子中出现的单个<ja>标签将被忽略，不会处理。
     # ===========================================================================
 ```  
-
 
 
 它经过了高达 97 种语言的预训练，相信它绝对能满足您的 TTS 语音合成项目所需。    
