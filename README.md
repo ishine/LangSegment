@@ -15,11 +15,11 @@ https://github.com/adbar/py3langid
 功能：将文章或句子里的例如（中/英/日/韩），按不同语言自动识别分词，使文本更适合AI处理。    
 本代码专为各种 TTS 项目的前端文本多语种混合标注区分，多语言混合训练和推理而编写。
 
-
-![image](./webui.png)   
 ## 最近更新：News   
 * 更细致的处理，中日英韩，分词更精准！  
-* 添加 WebUI 可视化界面，运行 app.py 即可快捷体验（如上图所示）。
+* 添加 WebUI 可视化界面，运行 app.py 即可快捷体验（如上图所示）。  
+
+![image](./webui.png)   
 
 ```python
 # Gradio demo：To use our gradio demo locally:
@@ -135,7 +135,7 @@ LangSegment.setLangfilters(["zh", "en", "ja", "ko"]) # 标准写法
 # 以上是示例，您可根据自己的TTS项目进行自由组合。
 ```  
 
-
+## 总结说明：  
 它经过了高达 97 种语言的预训练，相信它绝对能满足您的 TTS 语音合成项目所需。    
 comes pre-trained on 97 languages (ISO 639-1 codes given):  
 >af, am, an, ar, as, az, be, bg, bn, br, bs, ca, cs, cy, da, de, dz, el, en, eo, es, et, eu, fa, fi, fo, fr, ga, gl, gu, he, hi, hr, ht, hu, hy, id, is, it, ja, jv, ka, kk, km, kn, ko, ku, ky, la, lb, lo, lt, lv, mg, mk, ml, mn, mr, ms, mt, nb, ne, nl, nn, no, oc, or, pa, pl, ps, pt, qu, ro, ru, rw, se, si, sk, sl, sq, sr, sv, sw, ta, te, th, tl, tr, ug, uk, ur, vi, vo, wa, xh, zh, zu  
