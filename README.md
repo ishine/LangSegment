@@ -17,7 +17,7 @@ https://github.com/adbar/py3langid
 
 ## 最近更新：News   
 * 更细致的处理，中日英韩，分词更精准！  
-* 添加 WebUI 可视化界面，运行 app.py 即可快捷体验（如上图所示）。  
+* 添加 WebUI 可视化界面，运行 app.py 即可快捷体验（如图所示）。  
 
 ![image](./webui.png)   
 
