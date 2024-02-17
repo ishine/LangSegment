@@ -123,9 +123,6 @@ class LangSegment():
     
     @staticmethod
     def _saveData(words,language:str,text:str):
-        if "。" in text and len(text.strip())==1:
-            a= 10
-            pass
         # Language word statistics
         lang_count = LangSegment._lang_count
         if lang_count is None:lang_count = defaultdict(int)
