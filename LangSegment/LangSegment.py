@@ -59,6 +59,7 @@ class LangSegment():
     _text_lasts = None
     _text_langs = None
     _lang_count = None
+    _lang_eos =   None
     
     # 可自定义语言匹配标签：
     # Customizable language matching tags: These are supported
@@ -96,6 +97,7 @@ class LangSegment():
         LangSegment._text_langs = None
         LangSegment._text_waits = None
         LangSegment._lang_count = None
+        LangSegment._lang_eos   = None
         pass
     
     @staticmethod
@@ -196,6 +198,7 @@ class LangSegment():
         regex_pattern = re.compile(r'([^\w\s]+)')
         lines = regex_pattern.split(segment)
         lines_max = len(lines)
+        LANG_EOS =LangSegment._lang_eos
         for index, text in enumerate(lines):
             if len(text) == 0:continue
             EOS = index >= (lines_max - 1)
@@ -212,7 +215,7 @@ class LangSegment():
             language = LangSegment._lang_classify(cleans_text)
             prev_language , prev_text = LangSegment._get_prev_data(words)
             if len(cleans_text) <= 3 and LangSegment._is_chinese(cleans_text):
-                if EOS or len(cleans_text) <= 1:language = LANG_ZH
+                if EOS and LANG_EOS: language = LANG_ZH if len(cleans_text) <= 1 else language
                 else:
                     if prev_language != language:prev_language = None
                     elif LangSegment._match_ending(prev_text, -1):prev_language = None
@@ -309,13 +312,16 @@ class LangSegment():
             (  TAG_P1  , re.compile(r'(["\'])(.*?)(\1)')         , LangSegment._process_quotes  ),      # Regular quotes
             (  TAG_P2  , re.compile(r'([\n]*[【《（(“‘])([^【《（(“‘’”)）》】]{3,})([’”)）》】][\W\s]*[\n]{,1})')   , LangSegment._process_quotes  ),  # Special quotes, There are left and right.
         ]
+        LangSegment._lang_eos = False
         text_cache = LangSegment._text_cache = {}
         for item in process_list:
             text = LangSegment._pattern_symbols(item , text)
         pattern = re.compile(r'(⑥\$\d+[\d]{6,}⑥)')
         segments = re.split(pattern, text)
         words = []
-        for text in segments:
+        segments_len = len(segments) - 1
+        for index , text in enumerate(segments):
+            LangSegment._lang_eos = index >= segments_len
             if pattern.match(text):
                 process , data = text_cache[text]
                 if process:process(words , data)
