@@ -155,7 +155,7 @@ class LangSegment():
             else:preResult["lang"]=pre_lang.split("|")[0]
             if ispre_waits:preResult = LangSegment._saveData(words,preResult["lang"],preResult["text"])
         pre_lang = preResult["lang"] if preResult else None
-        if ("|" in language) and (pre_lang is None or not pre_lang in language):language = language.split("|")[0]
+        if ("|" in language) and (pre_lang and not pre_lang in language):language = language.split("|")[0]
         filters = LangSegment.Langfilters
         if "|" in language:LangSegment._text_waits.append({"lang":language,"text": text})
         elif filters is None or len(filters) == 0 or "?" in language or  \
@@ -175,12 +175,12 @@ class LangSegment():
         if input is None or len(input) == 0:return False
         input = re.sub(r'\s+', '', input)
         if len(input) == 0 or abs(index) > len(input):return False
-        ending_pattern = re.compile(r'([“”‘’"\':：。.！!?．？])')
+        ending_pattern = re.compile(r'([「」“”‘’"\':：。.！!?．？])')
         return ending_pattern.match(input[index])
     
     @staticmethod
     def _cleans_text(cleans_text):
-        cleans_text = re.sub(r'([^\w\s]+)', '', cleans_text)
+        cleans_text = re.sub(r'([^\w]+)', '', cleans_text)
         return cleans_text
     
     @staticmethod
@@ -277,8 +277,11 @@ class LangSegment():
         tag , match = data
         text = "".join(match)
         cleans_text = LangSegment._cleans_text(match[1])
-        language = LangSegment._lang_classify(cleans_text)
-        LangSegment._addwords(words,language,text)
+        if len(cleans_text) <= 3:
+            LangSegment._parse_language(words,text)
+        else:
+            language = LangSegment._lang_classify(cleans_text)
+            LangSegment._addwords(words,language,text)
         pass
     
     @staticmethod
@@ -304,7 +307,7 @@ class LangSegment():
             (  TAG_NUM , re.compile(r'(\d+\W+\d*\W*\d*)')        , LangSegment._process_number  ),      # Number words, Universal in all languages, Ignore it.
             (  TAG_EN  , re.compile(r'(([【《（(“‘"\']*[a-zA-Z]+[\W\s]*)+)')    , LangSegment._process_english ),                      # English words
             (  TAG_P1  , re.compile(r'(["\'])(.*?)(\1)')         , LangSegment._process_quotes  ),      # Regular quotes
-            (  TAG_P2  , re.compile(r'([\n]*[【《（(“‘])([^【《（(“‘’”)）》】]+)([’”)）》】][\W\s]*[\n]{,1})')   , LangSegment._process_quotes  ),  # Special quotes, There are left and right.
+            (  TAG_P2  , re.compile(r'([\n]*[【《（(“‘])([^【《（(“‘’”)）》】]{3,})([’”)）》】][\W\s]*[\n]{,1})')   , LangSegment._process_quotes  ),  # Special quotes, There are left and right.
         ]
         text_cache = LangSegment._text_cache = {}
         for item in process_list:
@@ -439,6 +442,7 @@ if __name__ == "__main__":
     
     # 输入示例3：（包含日文，中文）
     # text = "你会说日语吗：“中国語、話せますか” 你的日语真好啊！"
+    
     
     # 输入示例4：（包含日文，中文，韩语，英文）
     text = "你的名字叫<ja>佐々木？<ja>吗？韩语中的안녕 오빠读什么呢？あなたの体育の先生は誰ですか? 此次发布会带来了四款iPhone 15系列机型和三款Apple Watch等一系列新品，这次的iPad Air采用了LCD屏幕" 
