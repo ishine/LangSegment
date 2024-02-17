@@ -112,6 +112,29 @@ pip3 install LangSegment -i https://pypi.mirrors.ustc.edu.cn/simple
     # ===========================================================================
 ```  
 
+## 语言过滤：支持
+>语言过滤组功能, 可以指定保留语言。不在过滤组中的语言将被清除。您可随心搭配TTS语音合成所支持的语言。  
+```python
+# Set language filters
+# 设置语言过滤功能，未指定的语言将被清除，使它完全适配您的TTS项目。
+LangSegment.setLangfilters(["zh", "en", "ja", "ko"]) # 标准写法
+# 或者写成：
+# LangSegment.setLangfilters(["zh_en_ja_ko"]) # 写法1，过滤效果相同
+# LangSegment.setLangfilters(["zh-en-ja-ko"]) # 写法2，过滤效果相同
+
+# 参数组合说明，以下是部份场景示例：
+# ["zh"]        # 按中文识别
+# ["en"]        # 按英文识别
+# ["ja"]        # 按日文识别
+# ["ko"]        # 按韩文识别
+# ["zh_ja"]     # 中日混合识别
+# ["zh_en"]     # 中英混合识别
+# ["zh_ko"]     # 中韩混合识别
+# ["ja_en"]     # 日英混合识别
+# ["zh_ko_en"]  # 中韩英混合识别
+# 以上是示例，您可根据自己的TTS项目进行自由组合。
+```  
+
 
 它经过了高达 97 种语言的预训练，相信它绝对能满足您的 TTS 语音合成项目所需。    
 comes pre-trained on 97 languages (ISO 639-1 codes given):  
