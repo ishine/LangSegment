@@ -1,3 +1,8 @@
 from .LangSegment import LangSegment,getTexts,classify,getCounts,printList,setLangfilters,getLangfilters
 
-__version__ = '0.1.7'
+# release
+__version__ = '0.1.8'
+
+
+# develop
+__develop__ = 'dev-0.0.1'

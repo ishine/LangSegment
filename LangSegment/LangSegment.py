@@ -157,7 +157,7 @@ class LangSegment():
             else:preResult["lang"]=pre_lang.split("|")[0]
             if ispre_waits:preResult = LangSegment._saveData(words,preResult["lang"],preResult["text"])
         pre_lang = preResult["lang"] if preResult else None
-        if ("|" in language) and (pre_lang and not pre_lang in language):language = language.split("|")[0]
+        if ("|" in language) and (pre_lang and not pre_lang in language and not "…" in language):language = language.split("|")[0]
         filters = LangSegment.Langfilters
         if "|" in language:LangSegment._text_waits.append({"lang":language,"text": text})
         elif filters is None or len(filters) == 0 or "?" in language or  \
@@ -174,11 +174,11 @@ class LangSegment():
     
     @staticmethod
     def _match_ending(input , index):
-        if input is None or len(input) == 0:return False
+        if input is None or len(input) == 0:return False,None
         input = re.sub(r'\s+', '', input)
-        if len(input) == 0 or abs(index) > len(input):return False
+        if len(input) == 0 or abs(index) > len(input):return False,None
         ending_pattern = re.compile(r'([「」“”‘’"\':：。.！!?．？])')
-        return ending_pattern.match(input[index])
+        return ending_pattern.match(input[index]),input[index]
     
     @staticmethod
     def _cleans_text(cleans_text):
@@ -216,13 +216,12 @@ class LangSegment():
             prev_language , prev_text = LangSegment._get_prev_data(words)
             if len(cleans_text) <= 3 and LangSegment._is_chinese(cleans_text):
                 if EOS and LANG_EOS: language = LANG_ZH if len(cleans_text) <= 1 else language
+                elif LangSegment._is_japanese_kana(cleans_text):language = LANG_JA
                 else:
-                    if prev_language != language:prev_language = None
-                    elif LangSegment._match_ending(prev_text, -1):prev_language = None
-                    if LangSegment._is_japanese_kana(cleans_text):language = LANG_JA
-                    elif not prev_language or len(prev_language) == 0:language = f'{language}|{LANG_JA}'
-                    elif prev_language and LANG_JA in prev_language:language = prev_language
-                    else:language = LANG_ZH
+                    LANG_UNKNOWN = f'{LANG_ZH}|{LANG_JA}'
+                    match_end,match_char = LangSegment._match_ending(text, -1)
+                    referen = prev_language in LANG_UNKNOWN or LANG_UNKNOWN in prev_language if prev_language else False
+                    language = prev_language if match_char in "。." and referen else f"{LANG_UNKNOWN}|…"
             text,*_ = re.subn(number_tags , LangSegment._restore_number , text )
             LangSegment._addwords(words,language,text)
             pass
@@ -447,7 +446,7 @@ if __name__ == "__main__":
     # text = "欢迎来玩。東京，は日本の首都です。欢迎来玩.  太好了!"
     
     # 输入示例3：（包含日文，中文）
-    # text = "你会说日语吗：“中国語、話せますか” 你的日语真好啊！"
+    # text = "明日、私たちは海辺にバカンスに行きます。你会说日语吗：“中国語、話せますか” 你的日语真好啊！"
     
     
     # 输入示例4：（包含日文，中文，韩语，英文）
