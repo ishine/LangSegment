@@ -90,6 +90,10 @@ class LangSegment():
     
     # 更多过滤组合，请您随意。。。For more filter combinations, please feel free to......
     
+    
+    # DEFINITION
+    PARSE_TAG = re.compile(r'(⑥\$\d+[\d]{6,}⑥)')
+    
     @staticmethod
     def _clears():
         LangSegment._text_cache = None
@@ -221,7 +225,8 @@ class LangSegment():
                     LANG_UNKNOWN = f'{LANG_ZH}|{LANG_JA}'
                     match_end,match_char = LangSegment._match_ending(text, -1)
                     referen = prev_language in LANG_UNKNOWN or LANG_UNKNOWN in prev_language if prev_language else False
-                    language = prev_language if match_char in "。." and referen else f"{LANG_UNKNOWN}|…"
+                    if match_char in "。.": language = prev_language if referen and len(words) > 0 else language
+                    else:language = f"{LANG_UNKNOWN}|…"
             text,*_ = re.subn(number_tags , LangSegment._restore_number , text )
             LangSegment._addwords(words,language,text)
             pass
@@ -278,12 +283,16 @@ class LangSegment():
     def _process_quotes(words,data):
         tag , match = data
         text = "".join(match)
-        cleans_text = LangSegment._cleans_text(match[1])
-        if len(cleans_text) <= 3:
-            LangSegment._parse_language(words,text)
+        childs = LangSegment.PARSE_TAG.findall(text)
+        if len(childs) > 0:
+            LangSegment._process_tags(words , text , False)
         else:
-            language = LangSegment._lang_classify(cleans_text)
-            LangSegment._addwords(words,language,text)
+            cleans_text = LangSegment._cleans_text(match[1])
+            if len(cleans_text) <= 3:
+                LangSegment._parse_language(words,text)
+            else:
+                language = LangSegment._lang_classify(cleans_text)
+                LangSegment._addwords(words,language,text)
         pass
     
     @staticmethod
@@ -300,13 +309,28 @@ class LangSegment():
         pass
     
     @staticmethod
+    def _process_tags(words , text , root_tag):
+        text_cache = LangSegment._text_cache
+        segments = re.split(LangSegment.PARSE_TAG, text)
+        segments_len = len(segments) - 1
+        for index , text in enumerate(segments):
+            if root_tag:LangSegment._lang_eos = index >= segments_len
+            if LangSegment.PARSE_TAG.match(text):
+                process , data = text_cache[text]
+                if process:process(words , data)
+            else:
+                LangSegment._parse_language(words , text)
+            pass
+        return words
+    
+    @staticmethod
     def _parse_symbols(text):
         TAG_NUM = "00" # "00" => default channels , "$0" => testing channel
         TAG_S1,TAG_P1,TAG_P2,TAG_EN,TAG_KO = "$1" ,"$2" ,"$3" ,"$4" ,"$5"
         process_list = [
             (  TAG_S1  , re.compile(LangSegment.SYMBOLS_PATTERN) , LangSegment._process_symbol  ),      # Symbol Tag
             (  TAG_KO  , re.compile('(([【《（(“‘"\']*(\d+\W*\s*)*[\uac00-\ud7a3]+[\W\s]*)+)')  , LangSegment._process_korean  ),      # Korean words
-            (  TAG_NUM , re.compile(r'(\d+\W+\d*\W*\d*)')        , LangSegment._process_number  ),      # Number words, Universal in all languages, Ignore it.
+            (  TAG_NUM , re.compile(r'(\W*\d+\W+\d*\W*\d*)')        , LangSegment._process_number  ),      # Number words, Universal in all languages, Ignore it.
             (  TAG_EN  , re.compile(r'(([【《（(“‘"\']*[a-zA-Z]+[\W\s]*)+)')    , LangSegment._process_english ),                      # English words
             (  TAG_P1  , re.compile(r'(["\'])(.*?)(\1)')         , LangSegment._process_quotes  ),      # Regular quotes
             (  TAG_P2  , re.compile(r'([\n]*[【《（(“‘])([^【《（(“‘’”)）》】]{3,})([’”)）》】][\W\s]*[\n]{,1})')   , LangSegment._process_quotes  ),  # Special quotes, There are left and right.
@@ -315,18 +339,7 @@ class LangSegment():
         text_cache = LangSegment._text_cache = {}
         for item in process_list:
             text = LangSegment._pattern_symbols(item , text)
-        pattern = re.compile(r'(⑥\$\d+[\d]{6,}⑥)')
-        segments = re.split(pattern, text)
-        words = []
-        segments_len = len(segments) - 1
-        for index , text in enumerate(segments):
-            LangSegment._lang_eos = index >= segments_len
-            if pattern.match(text):
-                process , data = text_cache[text]
-                if process:process(words , data)
-            else:
-                LangSegment._parse_language(words , text)
-            pass
+        words = LangSegment._process_tags([] , text , True)
         lang_count = LangSegment._lang_count
         if lang_count and len(lang_count) > 0:
             lang_count = dict(sorted(lang_count.items(), key=lambda x: x[1], reverse=True))
@@ -447,7 +460,6 @@ if __name__ == "__main__":
     
     # 输入示例3：（包含日文，中文）
     # text = "明日、私たちは海辺にバカンスに行きます。你会说日语吗：“中国語、話せますか” 你的日语真好啊！"
-    
     
     # 输入示例4：（包含日文，中文，韩语，英文）
     text = "你的名字叫<ja>佐々木？<ja>吗？韩语中的안녕 오빠读什么呢？あなたの体育の先生は誰ですか? 此次发布会带来了四款iPhone 15系列机型和三款Apple Watch等一系列新品，这次的iPad Air采用了LCD屏幕" 
