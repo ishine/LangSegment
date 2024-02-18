@@ -105,7 +105,7 @@ with gr.Blocks(title="LangSegment WebUI" , css=gr_css) as app:
         value=f"# LangSegment 文本转语音专用，TTS混合语种分词 [v{LangSegment.__version__}]\n \
         <b>简介：它是一个强大的多语言（97种语言）的混合文本自动分词工具。[中日英韩：已测试]</b><br> \
         主要用途：它非常适合各种 TTS 语音合成项目（例如：vits），多语种混合文本的前端推理，和预处理后端训练。LICENSE详见根目录<br> \
-        <b>将它接入您的vits项目，在python上安装：```pip3 install LangSegment``` \t （CN国内镜像）：```pip3 install LangSegment -i https://pypi.mirrors.ustc.edu.cn/simple```</b><br> \
+        <b>将它接入您的vits项目，在python上安装：``` pip3 install LangSegment -i  https://pypi.org/simple ```</b><br> \
         若遇到问题，欢迎前往github提供反馈，一起让它变得更易用： https://github.com/juntaosun/LangSegment <br> \
         "
     )

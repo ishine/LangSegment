@@ -19,6 +19,8 @@ https://github.com/adbar/py3langid
 * 更细致的处理，中日英韩，分词更精准！  
 * 添加 WebUI 可视化界面，运行 app.py 即可快捷体验（如图所示）。  
 
+* <a href='https://huggingface.co/spaces/sunnyboxs/LangSegment'><u>点击在线体验，感谢 huggingface 提供服务支持</u>：<img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue'></a>
+
 ![image](./webui.png)   
 
 ```python
