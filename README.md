@@ -37,10 +37,13 @@ python app.py
 
 ## 安装方法：Install  
 ```bash
-pip3 install LangSegment
+# 首次安装：官方源（推荐）
+pip3 install LangSegment -i  https://pypi.org/simple
+# 后续版本升级或更新：
+pip3 install LangSegment -i  https://pypi.org/simple --upgrade
 
-# 或者，国内推荐使用镜像安装：  
-pip3 install LangSegment -i https://pypi.mirrors.ustc.edu.cn/simple
+# 或者，国内镜像（国内镜像同步慢几天，可能会导致您无法极时获得最新版本！！！）：  
+# pip3 install LangSegment -i https://pypi.mirrors.ustc.edu.cn/simple
 ```
 ## 使用示例：Example Input  
 >示例中的句子，同时包含中日英韩4种语言，接下来将对它们按不同语种进行分词，以方便各种TTS项目进行语音合成。  
