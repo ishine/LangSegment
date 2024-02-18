@@ -49,7 +49,7 @@ pip3 install LangSegment -i  https://pypi.org/simple --upgrade
 >示例中的句子，同时包含中日英韩4种语言，接下来将对它们按不同语种进行分词，以方便各种TTS项目进行语音合成。  
 ```python
 
-    # pip3 install LangSegment
+    # pip3 install LangSegment -i  https://pypi.org/simple
     import LangSegment
 
     # input text example 示例：
