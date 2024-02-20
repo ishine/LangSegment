@@ -97,7 +97,8 @@ def parse_language(input_text):
     langCounts = LangSegment.getCounts()
     if len(langCounts) > 0:
         lang , count = langCounts[0] 
-        label_text = f"您输入的主要语言为：【{getLanglabel(lang)}】。参考依据：{str(langCounts)}。过滤保留：{LangSegment.getfilters()}"
+        filters = LangSegment.getfilters()
+        label_text = f"您输入的主要语言为：【{getLanglabel(lang)}】。参考依据：{str(langCounts)}。\n过滤保留设置：LangSegment.setfilters({filters})"
     return output , codes , label_text
 
 # 过滤：
@@ -109,7 +110,7 @@ def lang_selected(option:str):
     # 设置过滤器值
     print(f"你选择了语言过滤器：{option} ==> {filterValues} ")
     # all = 代表保留所有语言，这里限定：中英日韩
-    filterValues = ["zh", "en", "ja", "ko"] if filterValues == "all" else filterValues
+    filterValues = ["zh", "en", "ja", "ko"] if filterValues == "all" else [filterValues]
     LangSegment.setfilters(filterValues)
     pass
 
