@@ -16,7 +16,8 @@ https://github.com/adbar/py3langid
 本代码专为各种 TTS 项目的前端文本多语种混合标注区分，多语言混合训练和推理而编写。
 
 ## 最近更新：News   
-* 版本：v0.1.9    
+* 版本：v0.2.0     
+ fix: LangSegment.setfilters
 * 优化字符处理。    
 * 更细致的处理，中日英韩，分词更精准！  
 * 多语言过滤组功能（默认关闭）！帮您自动清理不需要的语言内容。   
@@ -130,10 +131,12 @@ pip3 install LangSegment -i  https://pypi.org/simple --upgrade
 ```python
 # Set language filters
 # 设置语言过滤功能，未指定的语言将被清除，使它完全适配您的TTS项目。
-LangSegment.setLangfilters(["zh", "en", "ja", "ko"]) # 标准写法
+LangSegment.setfilters(["zh", "en", "ja", "ko"]) # 标准写法
 # 或者写成：
-# LangSegment.setLangfilters(["zh_en_ja_ko"]) # 写法1，过滤效果相同
-# LangSegment.setLangfilters(["zh-en-ja-ko"]) # 写法2，过滤效果相同
+# LangSegment.setfilters(["zh_en_ja_ko"]) # 写法1，过滤效果相同
+# LangSegment.setfilters(["zh-en-ja-ko"]) # 写法2，过滤效果相同
+# 获取过滤器：
+# LangSegment.getfilters()
 
 # 参数组合说明，以下是部份场景示例：
 # ["zh"]        # 按中文识别

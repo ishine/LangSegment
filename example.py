@@ -51,3 +51,34 @@ if __name__ == "__main__":
 
     # 输入内容的主要语言为 = zh ，字数 = 51
     # ==================================================
+    
+    # 过滤器测试：
+    text = "English中文"
+    LangSegment.setfilters(["en"]) # 仅输出英文
+    print(LangSegment.getTexts(text))
+    # [{'lang': 'en', 'text': 'English '}]
+    
+    LangSegment.setfilters(["zh"]) # 仅输出中文
+    print(LangSegment.getTexts(text))
+    # [{'lang': 'zh', 'text': '中文'}]
+    
+    text = "ある\"予言\"の中だけに登場する伝説上の聖騎士,English,中文输入"
+    LangSegment.setfilters(["zh-en-ja-ko"]) # 仅输出:中英日韩
+    print(LangSegment.getfilters(),LangSegment.getTexts(text))
+    # ['all'] [{'lang': 'ja', 'text': 'ある"予言"の中だけに登場する伝説上の聖騎士,'}, {'lang': 'en', 'text': 'English, '}, {'lang': 'zh', 'text': '中文输入'}]
+    
+    LangSegment.setfilters(["en"]) # 仅输出英文=en
+    print(LangSegment.getfilters(),LangSegment.getTexts(text))
+    # ['en'] [{'lang': 'en', 'text': 'English, '}]
+    
+    LangSegment.setfilters(["zh"]) # 仅输出中文=zh
+    print(LangSegment.getfilters(),LangSegment.getTexts(text))
+    # ['zh'] [{'lang': 'zh', 'text': '中文输入'}]
+    
+    LangSegment.setfilters(["ja"]) # 仅输出日文=ja
+    print(LangSegment.getfilters(),LangSegment.getTexts(text))
+    # ['ja'] [{'lang': 'ja', 'text': 'ある"予言"の中だけに登場する伝説上の聖騎士,'}]
+    
+    LangSegment.setfilters(["zh-en"]) # 仅输出中文=zh，英文=en
+    print(LangSegment.getfilters(),LangSegment.getTexts(text))
+    # ['zh-en'] [{'lang': 'en', 'text': 'English, '}, {'lang': 'zh', 'text': '中文输入'}]

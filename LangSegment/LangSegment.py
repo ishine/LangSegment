@@ -141,7 +141,11 @@ class LangSegment():
             preData["text"] = text
             return preData
         data = {"lang":language,"text": text}
-        words.append(data)
+        filters = LangSegment.Langfilters
+        if filters is None or len(filters) == 0 or "?" in language or   \
+            language in filters or language in filters[0] or \
+            filters[0] == "*" or filters[0] in "alls-mixs-autos":
+            words.append(data)
         return data
 
     @staticmethod
@@ -164,10 +168,7 @@ class LangSegment():
         if ("|" in language) and (pre_lang and not pre_lang in language and not "…" in language):language = language.split("|")[0]
         filters = LangSegment.Langfilters
         if "|" in language:LangSegment._text_waits.append({"lang":language,"text": text})
-        elif filters is None or len(filters) == 0 or "?" in language or  \
-            language in filters or language in filters[0] or filters[0] in "alls-mixs-autos":
-            LangSegment._saveData(words,language,text)
-            pass
+        else:LangSegment._saveData(words,language,text)
         return False
     
     @staticmethod
@@ -346,6 +347,19 @@ class LangSegment():
             lang_count = list(lang_count.items())
             LangSegment._lang_count = lang_count
         return words
+    
+    @staticmethod
+    def setfilters(filters):
+        # 当过滤器更改时，清除缓存
+        # When the filter changes, clear the cache
+        if LangSegment.Langfilters != filters:
+            LangSegment._clears()
+            LangSegment.Langfilters = filters
+        pass
+       
+    @staticmethod     
+    def getfilters():
+        return LangSegment.Langfilters
             
     
     @staticmethod
@@ -380,8 +394,8 @@ class LangSegment():
     @staticmethod
     def classify(text:str):
         return LangSegment.getTexts(text)
-    
-def setLangfilters(filters):
+
+def setfilters(filters):
     """
     功能：语言过滤组功能, 可以指定保留语言。不在过滤组中的语言将被清除。您可随心搭配TTS语音合成所支持的语言。
     Function: Language filter group function, you can specify reserved languages. \n
@@ -389,10 +403,10 @@ def setLangfilters(filters):
     Args:
         filters (list): ["zh", "en", "ja", "ko"]
     """
-    LangSegment.Langfilters = filters
+    LangSegment.setfilters(filters)
     pass
 
-def getLangfilters():
+def getfilters():
     """
     功能：语言过滤组功能, 可以指定保留语言。不在过滤组中的语言将被清除。您可随心搭配TTS语音合成所支持的语言。
     Function: Language filter group function, you can specify reserved languages. \n
@@ -400,7 +414,20 @@ def getLangfilters():
     Args:
         filters (list): ["zh", "en", "ja", "ko"]
     """
-    return LangSegment.Langfilters
+    return LangSegment.getfilters()
+
+# @Deprecated：Use shorter setfilters
+def setLangfilters(filters):
+    """
+    >0.1.9废除：使用更简短的setfilters
+    """
+    setfilters(filters)
+# @Deprecated：Use shorter getfilters
+def getLangfilters():
+    """
+    >0.1.9废除：使用更简短的getfilters
+    """
+    return getfilters()
     
 def getTexts(text:str):
     """
@@ -505,3 +532,7 @@ if __name__ == "__main__":
 
     # 输入内容的主要语言为 = zh ，字数 = 51
     # ==================================================
+    
+    
+
+    

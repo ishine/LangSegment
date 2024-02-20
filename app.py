@@ -35,8 +35,31 @@ langdic["ko"][0] = "韩文(ko)"
 langdic["no"][0] = "其它"
 
 # --------------------------------
+# 设置语言过滤器：默认为/中英日韩
 # Set language filters
-LangSegment.setLangfilters(["zh", "en", "ja", "ko"])
+LangSegment.setfilters(["zh", "en", "ja", "ko"])
+
+# 自定义过滤器，方便在Dropdown使用中文展示
+filter_list = [
+    "全部：中日英韩", # all
+    "中文",
+    "英文",
+    "日文",
+    "韩文",
+    "中文-英文",
+    "中文-日文",
+    "英文-日文",
+    "中文-英文-日文",
+]
+
+# 中文界面显示翻译映射
+dict_language={
+    "全部：中日英韩":"all", 
+    "中文":"zh",
+    "英文":"en",
+    "日文":"ja",
+    "韩文":"ko",
+}
 
 # --------------------------------
 
@@ -58,6 +81,8 @@ def parse_language(input_text):
     output = ""
     codes = []
     codes.append(("\n",noneKey))
+    # 当前的过滤器
+    print(LangSegment.getfilters())
     # （1）处理分词 processing participle
     langlist = LangSegment.getTexts(input_text)
     for data in langlist:
@@ -72,8 +97,21 @@ def parse_language(input_text):
     langCounts = LangSegment.getCounts()
     if len(langCounts) > 0:
         lang , count = langCounts[0] 
-        label_text = f"您输入的主要语言为：【{getLanglabel(lang)}】。参考依据：{str(langCounts)}"
+        label_text = f"您输入的主要语言为：【{getLanglabel(lang)}】。参考依据：{str(langCounts)}。过滤保留：{LangSegment.getfilters()}"
     return output , codes , label_text
+
+# 过滤：
+def lang_selected(option:str):
+    filterValues = option
+    # 列表中文映射
+    for key in dict_language:
+        filterValues = filterValues.replace(key,dict_language[key])
+    # 设置过滤器值
+    print(f"你选择了语言过滤器：{option} ==> {filterValues} ")
+    # all = 代表保留所有语言，这里限定：中英日韩
+    filterValues = ["zh", "en", "ja", "ko"] if filterValues == "all" else filterValues
+    LangSegment.setfilters(filterValues)
+    pass
 
 # Translated from Google：
 #LangSegment Text-to-Speech TTS Multilingual Word Segmentation\ n\
@@ -99,6 +137,9 @@ gr_css = """
 .lang_button {
     height: 80px;
 }
+.codes_text {
+    min-height: 450px;
+}
 """
 
 with gr.Blocks(title="LangSegment WebUI" , css=gr_css) as app:
@@ -113,11 +154,10 @@ with gr.Blocks(title="LangSegment WebUI" , css=gr_css) as app:
     with gr.Group():
         with gr.Row():
             with gr.Column():
+                input_text  = gr.TextArea(label=f"【分词输入】：多语种混合文本内容。目前仅专注（中文Chinese、日文Japanese、英文English、韩文Korean）", value="",lines=12)
                 # [Word input]: Multilingual mixed text content. Currently specially supported (Chinese, Japanese, English, Korean)
-                input_text  = gr.TextArea(label=f"【分词输入】：多语种混合文本内容。目前仅专注（中文Chinese、日文Japanese、英文English、韩文Korean）", value="",lines=15)
-                # [Word segmentation statistics]: According to the processing results, predict the main language you entered.
-                label_text = gr.Text(label="【分词统计】：根据处理结果，推测您输入的主要语言。", value="")
                 gr.Markdown(value=f"{lang_desc}")
+                lang_filters = gr.Dropdown(choices=filter_list, value=filter_list[0], label='【语言过滤】：设置需要保留的语言，过滤其它语言。(API：LangSegment.setfilters)')
                 # TTS multilingual mixed text, click for word segmentation
                 lang_button = gr.Button("TTS多语言混合文本 , 点击进行分词处理", variant="primary",elem_classes=["lang_button"])
             with gr.Column():
@@ -133,18 +173,26 @@ with gr.Blocks(title="LangSegment WebUI" , css=gr_css) as app:
                                 combine_adjacent=True,
                                 show_legend=True,
                                 color_map=color_map,
+                                elem_classes=["codes_text"],
                             )
                     # B: Toggle the result code display
                     with gr.TabItem("B：切换代码结果显示"):
                         with gr.Column():
                             # [Word segmentation result]: Multiple languages have been separated (Chinese, Japanese, English, Korean), just enter TTS Text To Speech directly.
-                            output_text = gr.TextArea(label="【分词结果】：多国语言已经分离完成（中zh、日ja、英en、韩ko），直接输入TTS语音合成处理即可。", value="",lines=15)
+                            output_text = gr.TextArea(label="【分词结果】：多国语言已经分离完成（中zh、日ja、英en、韩ko），直接输入TTS语音合成处理即可。", value="",lines=19)
+                # [Word segmentation statistics]: According to the processing results, predict the main language you entered.
+                label_text = gr.Text(label="【分词统计】：根据处理结果，推测您输入的主要语言。", value="")
             
         
         lang_button.click(
             parse_language,
             [input_text],
             [output_text , codes_text ,label_text],
+        )
+        
+        lang_filters.change(
+            lang_selected,
+            [lang_filters]
         )
         
 app.queue(concurrency_count=511, max_size=1022).launch(
