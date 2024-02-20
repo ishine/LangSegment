@@ -133,6 +133,14 @@ lang_desc = """
     （3）英文大写缩略词：如USA、ChatGPT。结果为：U S A、ChatG P T。语音合成常用空格分隔，让字母单独发音。
 """
 
+# 默认示例文本：
+example_text = """
+我喜欢在雨天里听音乐。
+I enjoy listening to music on rainy days.
+雨の日に音楽を聴くのが好きです。
+비 오는 날에 음악을 듣는 것을 즐깁니다。
+"""
+
 gr_css = """
 .lang_button {
     height: 80px;
@@ -154,7 +162,7 @@ with gr.Blocks(title="LangSegment WebUI" , css=gr_css) as app:
     with gr.Group():
         with gr.Row():
             with gr.Column():
-                input_text  = gr.TextArea(label=f"【分词输入】：多语种混合文本内容。目前仅专注（中文Chinese、日文Japanese、英文English、韩文Korean）", value="",lines=12)
+                input_text  = gr.TextArea(label=f"【分词输入】：多语种混合文本内容。目前仅专注（中文Chinese、日文Japanese、英文English、韩文Korean）", value=f"{example_text}",lines=12)
                 # [Word input]: Multilingual mixed text content. Currently specially supported (Chinese, Japanese, English, Korean)
                 gr.Markdown(value=f"{lang_desc}")
                 lang_filters = gr.Dropdown(choices=filter_list, value=filter_list[0], label='【语言过滤】：设置需要保留的语言，过滤其它语言。(API：LangSegment.setfilters)')
